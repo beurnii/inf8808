@@ -10,7 +10,7 @@
             / find the function in D3 allowing you to get all the circles in the SVG element and store
             the result in the variable "circles"
   */
-  var circles = svg.selectAll("circle");
+  var circles;
 
   d3.select("#create-circles-button")
     .on("click", createCircles);
@@ -34,8 +34,8 @@
        1) Update the circles variable
        2) Update the text indicating the number of circles in the SVG element
      */
-	 circles = svg.selectAll("circle");
-	 d3.select("#circles-count").innerHTML = circles.length;
+    circles = svg.selectAll("circle");
+    document.getElementById("circles-count").innerHTML = circles.size();
   }
 
   /**
@@ -61,10 +61,16 @@
           (use function generateRandomCircle())
        4) If this value is not corect, create an alert informing the user. 
     */
-	var v = d3.select("quantity").value;
-	alert(v);
-
+    var v = document.getElementById("quantity").value;
+    if (false) {
+      alert("t con");
+      return;
+    }
+    for (var i = 0; i < v; i++) {
+      generateRandomCircle();
+    }
   }
+  circles = svg.selectAll("circle");
 
   /**
    * Suppression de tous les cercles présents dans l'élément SVG.
@@ -74,21 +80,21 @@
    * Deletion of all the circles in the SVG element
    */
   function deleteCircles() {
-	/* TODO :
-	   1) Afficher une boîte de confirmation afin de confirmer si l'utilisateur souhaite supprimer tous les cercles.
-     2) Supprimer tous les cercles si l'utilisateur souhaite les supprimer, sinon ne rien faire.
-     
-     / 
+    /* TODO :
+       1) Afficher une boîte de confirmation afin de confirmer si l'utilisateur souhaite supprimer tous les cercles.
+       2) Supprimer tous les cercles si l'utilisateur souhaite les supprimer, sinon ne rien faire.
+       
+       / 
+  
+       1) Show a confirmation box to confirm if the user wants to delete all the circles
+       2) Delete all the circles if the users wants, if not do nothing. 
+      */
 
-     1) Show a confirmation box to confirm if the user wants to delete all the circles
-     2) Delete all the circles if the users wants, if not do nothing. 
-    */
-	
-	var del = confirm("Delete all circles?");
-	if (del == true) {
-		circles.remove();
-		update();
-	}
+    var del = confirm("Delete all circles?");
+    if (del == true) {
+      circles.remove();
+      update();
+    }
 
   }
 
@@ -147,15 +153,18 @@
 
        format the important information of the pointed circle
        You can use <br> to skip lines
-
      */
+
+    return  "Rayon".fontcolor("red") + " du cercle : " + radius.toString().fontcolor("red") + "<br>" + 
+            "Centre".fontcolor("Cyan") + " du cercle : " + position.fontcolor("Cyan") + "<br>" + 
+            "Couleur".fontcolor(color) + " du cercle : " + color.fontcolor(color);
 
   }
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
-    .html(function () {
+    .html(function (i,j,o) {
 
       /* TODO : Récupérer les informations pertinentes du cercle pointé. Ces éléments sont :
          1) Le rayon du cercle
@@ -169,10 +178,9 @@
          2) The position
          3) The color
        */
-
-      var radius ;
-      var position ;
-      var color ;
+      var radius = Math.round(o[0].r.baseVal.value);
+      var position = "(" + Math.round(o[0].attributes["cx"].value) + "," + Math.round(o[0].attributes["cy"].value) + ")";
+      var color = o[0].attributes["fill"].value;
       return textTip(radius, position, color);
     });
 
